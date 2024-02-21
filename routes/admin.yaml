@@ -130,7 +130,7 @@ tags:
   - name: Public
 
 paths:
-  /admin/login:
+  /api/admin/login:
     post:
       summary: Login user
       tags: [Admin]
@@ -147,7 +147,7 @@ paths:
           $ref: "#/components/responses/Forbidden403"
         500:
           $ref: "#/components/responses/Error500"
-  /admin:
+  /api/admin:
     patch:
       tags: [Admin]
       security: 
@@ -167,7 +167,31 @@ paths:
         500:
           $ref: "#/components/responses/Error500"
       # ... other operation details
-  /admin/static:
+  /api/admin/upload-audio:
+    post:
+      security: 
+        - bearerAuth: []
+      summary: Upload audio
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                images:
+                  type: string
+                  format: binary
+                  description: Image file to upload.  
+      responses:
+        200:
+          content:
+            application/json:
+              example: Sucess
+        500:
+          $ref: "#/components/responses/Error500"
+  /api/admin/static:
     get:
       tags: [Static_places]
       security: 
@@ -180,7 +204,7 @@ paths:
           $ref: "#/components/responses/Error401"
         500:
           $ref: "#/components/responses/Error500"
-  /admin/static/{id}:
+  /api/admin/static/{id}:
     get:
       parameters:
       - name: id
@@ -232,7 +256,7 @@ paths:
           $ref: "#/components/responses/Error404"
         500:
           $ref: "#/components/responses/Error500"
-  /admin/static/{id}/upload-image:
+  /api/admin/static/{id}/upload-image:
     post:
       security: 
         - bearerAuth: []
@@ -264,7 +288,7 @@ paths:
           $ref: "#/components/responses/Error404"
         500:
           $ref: "#/components/responses/Error500"
-  /admin/static/images/{id}:
+  /api/admin/static/images/{id}:
     delete:
       parameters:
       - name: id
@@ -281,7 +305,7 @@ paths:
           $ref: "#/components/responses/StaticPlace200"
         404:
           $ref: "#/components/responses/Error404"
-  /admin/about-us:
+  /api/admin/about-us:
     get:
       tags: [About us]
       security: 
@@ -338,7 +362,7 @@ paths:
                 example: Sucess
           400:
             $ref: "#/components/responses/Error400"
-  /admin/about-us/upload-image:
+  /api/admin/about-us/upload-image:
     post:
       security: 
         - bearerAuth: []
@@ -362,7 +386,7 @@ paths:
               example: Sucess
         400:
           $ref: "#/components/responses/Error400"
-  /admin/about-us/images/{id}:
+  /api/admin/about-us/images/{id}:
     delete:
       security: 
         - bearerAuth: []
@@ -380,7 +404,7 @@ paths:
               example: Sucess
         404:
           $ref: "#/components/responses/Error404"
-  /admin/gallery:
+  /api/admin/gallery:
     get:
       tags: [Gallery]
       security: 
@@ -432,7 +456,7 @@ paths:
           $ref: "#/components/responses/Error401"
         500:
           $ref: "#/components/responses/Error500"
-  /admin/gallery/{id}:
+  /api/admin/gallery/{id}:
     delete:
       security: 
         - bearerAuth: []
@@ -452,24 +476,38 @@ paths:
           $ref: "#/components/responses/Error404"
         500:
           $ref: "#/components/responses/Error500"
-  /admin/trips:
+  /api/admin/trips:
     get:
       tags: [Trips]
       security: 
         - bearerAuth: []
       summary: Get all trips
+      parameters:
+        - name: limit
+          in: path
+          type: integer
+        - name: offset
+          in: path
+          type: integer
+        - name: keyword
+          in: path
+          type: integer
+          description: Word for searching
       responses:
         200:
           content:
             application/json:
               example: 
-                  [
+                {
+                  data: [
                     {
                         "id": 3,
                         "title": "Koytendag",
                         "description": "Gowy yer"
-                    }
-                  ]          
+                    },
+                  ],          
+                  count: 1
+                } 
         401:
           $ref: "#/components/responses/Error401"
     post:
@@ -502,7 +540,7 @@ paths:
                 }
         500:
           $ref: "#/components/responses/Error500"
-  /admin/trips/{id}:
+  /api/admin/trips/{id}:
     get:
       security: 
         - bearerAuth: []
@@ -592,7 +630,7 @@ paths:
           $ref: "#/components/responses/Error404"
         500:
           $ref: "#/components/responses/Error500"
-  /admin/trips/upload-image/{id}:
+  /api/admin/trips/upload-image/{id}:
     post:
       security: 
         - bearerAuth: []
@@ -624,7 +662,7 @@ paths:
           $ref: "#/components/responses/Error404"
         500:
           $ref: "#/components/responses/Error500"
-  /admin/trips/image/{id}:
+  /api/admin/trips/image/{id}:
     delete:
       parameters:
       - name: id
@@ -643,24 +681,38 @@ paths:
               example: Sucess
         404:
           $ref: "#/components/responses/Error404"
-  /admin/tips:
+  /api/admin/tips:
     get:
       tags: [Tips]
       security: 
         - bearerAuth: []
       summary: Get all tips
+      parameters:
+        - name: limit
+          in: path
+          type: integer
+        - name: offset
+          in: path
+          type: integer
+        - name: keyword
+          in: path
+          type: integer
+          description: Word for searching
       responses:
         200:
           content:
             application/json:
               example: 
-                  [
-                    {
-                        "id": 2,
-                        "title": "How to get visa",
-                        "description": "Go to console"
-                    }
-                  ]          
+                  {
+                    data: [
+                      {
+                          "id": 2,
+                          "title": "How to get visa",
+                          "description": "Go to console"
+                      }
+                    ],
+                    count: 1        
+                  }
         401:
           $ref: "#/components/responses/Error401"
     post:
@@ -693,7 +745,7 @@ paths:
                 }
         500:
           $ref: "#/components/responses/Error500"
-  /admin/tips/{id}:
+  /api/admin/tips/{id}:
     get:
       security: 
         - bearerAuth: []
