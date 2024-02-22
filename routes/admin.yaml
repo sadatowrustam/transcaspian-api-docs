@@ -256,7 +256,7 @@ paths:
           $ref: "#/components/responses/Error404"
         500:
           $ref: "#/components/responses/Error500"
-  /api/admin/static/{id}/upload-image:
+  /api/admin/static/upload-image{id}:
     post:
       security: 
         - bearerAuth: []
@@ -276,6 +276,38 @@ paths:
               type: object
               properties:
                 images:
+                  type: string
+                  format: binary
+                  description: Image file to upload.  
+      responses:
+        200:
+          content:
+            application/json:
+              example: Sucess
+        404:
+          $ref: "#/components/responses/Error404"
+        500:
+          $ref: "#/components/responses/Error500"
+  /api/admin/static/upload-icon/{id}:
+    post:
+      security: 
+        - bearerAuth: []
+      summary: Upload image for place
+      tags: [Static_places]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          description: Unique identifier for the static resource.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                icon:
                   type: string
                   format: binary
                   description: Image file to upload.  
